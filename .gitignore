@@ -40,3 +40,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+sample_1.html
+sample_2.html
+test-normalize.mjs
+sample_3.html
