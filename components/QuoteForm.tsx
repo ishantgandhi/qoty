@@ -9,6 +9,7 @@ type QuoteFormProps = {
   onTextChange: (text: string) => void;
   onFilesChange: (files: File[]) => void;
   onSubmit: () => void;
+  onClear: () => void;
 };
 
 export function QuoteForm({
@@ -18,6 +19,7 @@ export function QuoteForm({
   onTextChange,
   onFilesChange,
   onSubmit,
+  onClear,
 }: QuoteFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -68,9 +70,8 @@ export function QuoteForm({
       </div>
 
       <div
-        className={`rounded-xl border ${
-          isDragging ? 'border-amber-400 bg-amber-50' : 'border-gray-300'
-        }`}
+        className={`rounded-xl border ${isDragging ? 'border-amber-400 bg-amber-50' : 'border-gray-300'
+          }`}
         onDragOver={(e) => {
           e.preventDefault();
           setIsDragging(true);
@@ -116,14 +117,24 @@ export function QuoteForm({
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={onSubmit}
-        disabled={loading}
-        className="mt-6 w-full rounded-xl bg-amber-400 py-3 font-semibold text-black hover:bg-amber-500 disabled:opacity-60"
-      >
-        {loading ? 'Running Qoty…' : 'Run Qoty'}
-      </button>
+      <div className="mt-6 flex gap-3">
+        <button
+          type="button"
+          onClick={onSubmit}
+          disabled={loading}
+          className="flex-1 rounded-xl bg-amber-400 py-3 font-semibold text-black hover:bg-amber-500 disabled:opacity-60"
+        >
+          {loading ? 'Running Qoty…' : 'Run Qoty'}
+        </button>
+        <button
+          type="button"
+          onClick={onClear}
+          disabled={loading}
+          className="rounded-xl border border-gray-300 px-5 py-3 font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+        >
+          Clear
+        </button>
+      </div>
     </div>
   );
 }

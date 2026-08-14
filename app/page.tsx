@@ -63,6 +63,12 @@ export default function Home() {
         onTextChange={setText}
         onFilesChange={setFiles}
         onSubmit={handleSubmit}
+        onClear={() => {
+          setText('');
+          setFiles([]);
+          setResult(null);
+          setError(null);
+        }}
       />
 
       {error && <p className="mt-4 text-center text-red-600">{error}</p>}
