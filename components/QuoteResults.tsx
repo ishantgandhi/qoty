@@ -1,5 +1,20 @@
+'use client';
+
+import { motion } from 'framer-motion';
 import { ResultRow } from '@/components/ResultRow';
 import { BREAKDOWN_FIELDS, type QuoteResult } from '@/lib/quote';
+
+const list = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.08, delayChildren: 0.08 },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' as const } },
+};
 
 function TotalQuoteCard({ result }: { result: QuoteResult }) {
   const { total_quote, total_quote_check } = result;
@@ -42,20 +57,30 @@ function TotalQuoteCard({ result }: { result: QuoteResult }) {
 export function QuoteResults({ result }: { result: QuoteResult }) {
   return (
     <section className="mt-10">
-      <h2 className="mb-6 text-2xl font-bold">Results</h2>
-      <TotalQuoteCard result={result} />
-      <hr className="my-4 border-gray-200" />
-      <div className="space-y-4">
+      <motion.h2
+        className="mb-6 text-2xl font-bold"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        Results
+      </motion.h2>
+      <motion.div variants={list} initial="hidden" animate="show" className="space-y-4">
+        <motion.div variants={item}>
+          <TotalQuoteCard result={result} />
+        </motion.div>
+        <motion.hr variants={item} className="border-gray-200" />
         {BREAKDOWN_FIELDS.map(({ key, label }) => (
-          <ResultRow
-            key={key}
-            label={label}
-            value={result[key].value}
-            basis={result[key].basis}
-            isEstimate={result[key].is_estimate}
-          />
+          <motion.div key={key} variants={item}>
+            <ResultRow
+              label={label}
+              value={result[key].value}
+              basis={result[key].basis}
+              isEstimate={result[key].is_estimate}
+            />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { AnimatePresence, motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 
 type QuoteFormProps = {
@@ -36,12 +37,14 @@ export function QuoteForm({
     <div>
       <div className="mb-2 flex items-center justify-between gap-3">
         <label className="font-semibold" htmlFor="quote-text">
-          Enter Either Text or Upload Files
+          Add Quote
         </label>
-        <button
+        <motion.button
           type="button"
           aria-label="Upload files"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-amber-400 text-black hover:bg-amber-500"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-amber-400 text-black"
+          whileHover={{ scale: 1.08, backgroundColor: '#f59e0b' }}
+          whileTap={{ scale: 0.92 }}
           onClick={() => fileInputRef.current?.click()}
         >
           <svg
@@ -55,7 +58,7 @@ export function QuoteForm({
           >
             <path d="M12 19V5M5 12l7-7 7 7" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-        </button>
+        </motion.button>
         <input
           ref={fileInputRef}
           type="file"
@@ -69,9 +72,14 @@ export function QuoteForm({
         />
       </div>
 
-      <div
-        className={`rounded-xl border ${isDragging ? 'border-amber-400 bg-amber-50' : 'border-gray-300'
-          }`}
+      <motion.div
+        className="rounded-xl border"
+        animate={{
+          scale: isDragging ? 1.01 : 1,
+          borderColor: isDragging ? '#fbbf24' : '#d1d5db',
+          backgroundColor: isDragging ? '#fffbeb' : 'rgba(255,255,255,0)',
+        }}
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
         onDragOver={(e) => {
           e.preventDefault();
           setIsDragging(true);
@@ -94,13 +102,18 @@ export function QuoteForm({
           value={text}
           onChange={(e) => onTextChange(e.target.value)}
         />
-      </div>
+      </motion.div>
 
-      {files.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-2">
+      <motion.div layout className="mt-3 flex flex-wrap gap-2 empty:mt-0 empty:hidden">
+        <AnimatePresence initial={false}>
           {files.map((file, index) => (
-            <span
-              key={`${file.name}-${index}`}
+            <motion.span
+              key={`${file.name}-${file.size}-${file.lastModified}-${index}`}
+              layout
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.85 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 24 }}
               className="inline-flex items-center gap-1.5 rounded-md bg-amber-100 px-2.5 py-1 text-sm"
             >
               {file.name}
@@ -112,28 +125,34 @@ export function QuoteForm({
               >
                 ×
               </button>
-            </span>
+            </motion.span>
           ))}
-        </div>
-      )}
+        </AnimatePresence>
+      </motion.div>
 
       <div className="mt-6 flex gap-3">
-        <button
+        <motion.button
           type="button"
           onClick={onSubmit}
           disabled={loading}
-          className="flex-1 rounded-xl bg-amber-400 py-3 font-semibold text-black hover:bg-amber-500 disabled:opacity-60"
+          className="flex-1 rounded-xl bg-amber-400 py-3 font-semibold text-black disabled:opacity-60"
+          whileHover={loading ? undefined : { scale: 1.015, backgroundColor: '#f59e0b' }}
+          whileTap={loading ? undefined : { scale: 0.985 }}
+          animate={loading ? { opacity: [1, 0.7, 1] } : { opacity: 1 }}
+          transition={loading ? { duration: 1.1, repeat: Infinity, ease: 'easeInOut' } : { type: 'spring', stiffness: 400, damping: 25 }}
         >
           {loading ? 'Running Qoty…' : 'Run Qoty'}
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           type="button"
           onClick={onClear}
           disabled={loading}
-          className="rounded-xl border border-gray-300 px-5 py-3 font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+          className="rounded-xl border border-gray-300 px-5 py-3 font-semibold text-gray-700 disabled:opacity-60"
+          whileHover={loading ? undefined : { scale: 1.02, backgroundColor: '#f9fafb' }}
+          whileTap={loading ? undefined : { scale: 0.97 }}
         >
           Clear
-        </button>
+        </motion.button>
       </div>
     </div>
   );

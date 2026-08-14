@@ -1,5 +1,6 @@
 'use client';
 
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { QuoteForm } from '@/components/QuoteForm';
 import { QuoteResults } from '@/components/QuoteResults';
@@ -45,35 +46,73 @@ export default function Home() {
 
   return (
     <main className="max-w-2xl mx-auto w-full px-4 py-16 font-sans">
-      <header className="mb-10 flex items-center justify-center gap-3">
-        <img
+      <motion.header
+        className="mb-10 flex items-center justify-center gap-3"
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+      >
+        <motion.img
           src="/qoty.png"
           alt=""
           width={64}
           height={64}
           className="h-16 w-16 rounded-full"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 320, damping: 18, delay: 0.05 }}
         />
         <h1 className="text-3xl font-medium">Qoty</h1>
-      </header>
+      </motion.header>
 
-      <QuoteForm
-        text={text}
-        files={files}
-        loading={loading}
-        onTextChange={setText}
-        onFilesChange={setFiles}
-        onSubmit={handleSubmit}
-        onClear={() => {
-          setText('');
-          setFiles([]);
-          setResult(null);
-          setError(null);
-        }}
-      />
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut', delay: 0.12 }}
+      >
+        <QuoteForm
+          text={text}
+          files={files}
+          loading={loading}
+          onTextChange={setText}
+          onFilesChange={setFiles}
+          onSubmit={handleSubmit}
+          onClear={() => {
+            setText('');
+            setFiles([]);
+            setResult(null);
+            setError(null);
+          }}
+        />
+      </motion.div>
 
-      {error && <p className="mt-4 text-center text-red-600">{error}</p>}
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            key="error"
+            className="mt-4 text-center text-red-600"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+          >
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
 
-      {result && <QuoteResults result={result} />}
+      <AnimatePresence>
+        {result && (
+          <motion.div
+            key="results"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+          >
+            <QuoteResults result={result} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
