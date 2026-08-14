@@ -3,6 +3,8 @@ import { supabase } from "@/lib/supabase";
 import { normalizeMultipleInputs } from "@/lib/normalize";
 import { tools } from "@/lib/extract-tools";
 
+export const maxDuration = 60;
+
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });

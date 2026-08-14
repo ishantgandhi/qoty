@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Qoty
 
-## Getting Started
+Qoty extracts hotel quote pricing from pasted text, HTML emails, or PDF/HTML files. It returns four fields (**total**, **guestroom**, **meeting room**, and **food & beverage**) then saves the result to Supabase.
 
-First, run the development server:
+## Prerequisites
+
+- Node.js 20+
+- npm
+- An [Anthropic](https://console.anthropic.com/) API key
+- A [Supabase](https://supabase.com/) project
+
+## Setup
+
+```bash
+git clone <your-repo-url>
+cd hotel-quote-parser
+npm install
+```
+
+Create `.env.local` in the project root (this file is gitignored):
+
+```
+ANTHROPIC_API_KEY=your_anthropic_key
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+```
+
+Get the Anthropic key from [console.anthropic.com](https://console.anthropic.com/). Get the Supabase URL and anon key from **Project Settings → API**.
+
+## Supabase
+
+In the SQL editor, create (or update) the `quotes` table:
+
+```sql
+create table if not exists quotes (
+  id bigint generated always as identity primary key,
+  created_at timestamptz not null default now(),
+  source_type text,
+  raw_text text,
+  total_quote numeric,
+  guestroom_total numeric,
+  meeting_room_total numeric,
+  fb_total numeric,
+  computed_total numeric,
+  field_basis jsonb
+);
+
+alter table quotes enable row level security;
+
+create policy "Allow inserts from app"
+on quotes
+for insert
+to anon
+with check (true);
+```
+
+
+The app uses the **anon** key from the server, so the insert policy above is required or saves will fail.
+
+## Run locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Paste a quote, upload `.html` / `.pdf` / `.txt`, or both, then click **Run Qoty**.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Samples are in the sample folder.
 
-## Learn More
+## Deployed (Vercel)
 
-To learn more about Next.js, take a look at the following resources:
+Although the app is deployed it has a limit to file size. You can still view it here at 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+https://hotel-quote-parser.vercel.app/
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Notes**
 
-## Deploy on Vercel
+- Request bodies over ~4.5MB return 413. Large HTML emails with embedded images or huge PDFs should be pasted as text or trimmed.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## How it works
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. The browser builds `{ type, content, label }` inputs (`lib/quote.ts`).
+2. `POST /api/extract` normalizes HTML/PDF/text (`lib/normalize.js`).
+3. Claude fills `extract_quote_fields` (`lib/extract-tools.js`).
+4. The route checksums total vs guestroom + meeting + F&B, then inserts into `quotes`.
+5. The UI shows the four amounts; if the checksum disagrees, it also shows a calculated total.
+
+## Scripts
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Dev server |
+| `npm run build` | Production build |
+| `npm start` | Serve the production build |
+| `npm run lint` | ESLint |
