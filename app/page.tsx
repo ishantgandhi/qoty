@@ -44,20 +44,29 @@ export default function Home() {
   }
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-16">
-      <h1 className="font-serif text-2xl text-center mb-10">
-        Hotel Quote Parser
-      </h1>
+    <main className="max-w-2xl mx-auto w-full px-4 py-16 font-sans">
+      <header className="mb-10 flex items-center justify-center gap-3">
+        <img
+          src="/qoty.png"
+          alt=""
+          width={64}
+          height={64}
+          className="h-16 w-16 rounded-full"
+        />
+        <h1 className="text-3xl font-medium">Qoty</h1>
+      </header>
 
       <QuoteForm
         text={text}
+        files={files}
+        loading={loading}
         onTextChange={setText}
         onFilesChange={setFiles}
         onSubmit={handleSubmit}
       />
 
-      {loading && <p className="text-center text-gray-500">Extracting...</p>}
-      {error && <p className="text-center text-red-600">{error}</p>}
+      {error && <p className="mt-4 text-center text-red-600">{error}</p>}
+
       {result && <QuoteResults result={result} />}
     </main>
   );

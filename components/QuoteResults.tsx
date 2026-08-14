@@ -1,5 +1,5 @@
-import { AmountColumn, Card, FieldCard } from "@/components/FieldCard";
-import { BREAKDOWN_FIELDS, type QuoteResult } from "@/lib/quote";
+import { ResultRow } from '@/components/ResultRow';
+import { BREAKDOWN_FIELDS, type QuoteResult } from '@/lib/quote';
 
 function TotalQuoteCard({ result }: { result: QuoteResult }) {
   const { total_quote, total_quote_check } = result;
@@ -7,32 +7,55 @@ function TotalQuoteCard({ result }: { result: QuoteResult }) {
   const mismatch = computed != null && !total_quote_check?.matches_extraction;
 
   if (!mismatch) {
-    return <FieldCard label="Total Quote" field={total_quote} />;
+    return (
+      <ResultRow
+        label="Total"
+        value={total_quote.value}
+        basis={total_quote.basis}
+        isEstimate={total_quote.is_estimate}
+        emphasize
+      />
+    );
   }
 
   return (
-    <Card>
-      <div className="text-sm text-gray-500 mb-3">
-        Total quote — two figures found, they differ
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-2">
-        <AmountColumn label="Extracted" value={total_quote.value} />
-        <AmountColumn label="Calculated" value={computed} />
-      </div>
-      <div className="text-sm text-gray-400">
-        Review the component breakdown below.
-      </div>
-    </Card>
+    <div className="space-y-3">
+      <ResultRow
+        label="Total"
+        value={total_quote.value}
+        basis={total_quote.basis}
+        isEstimate={total_quote.is_estimate}
+        emphasize
+      />
+      <p className="text-xs text-gray-400">
+        Two figures found, they differ. Review the component breakdown below.
+      </p>
+      <ResultRow
+        label="Calculated"
+        value={computed}
+        basis="Sum of guestroom, meeting room, and F&B totals"
+      />
+    </div>
   );
 }
 
 export function QuoteResults({ result }: { result: QuoteResult }) {
   return (
-    <div className="space-y-3">
+    <section className="mt-10">
+      <h2 className="mb-6 text-2xl font-bold">Results</h2>
       <TotalQuoteCard result={result} />
-      {BREAKDOWN_FIELDS.map(({ key, label }) => (
-        <FieldCard key={key} label={label} field={result[key]} />
-      ))}
-    </div>
+      <hr className="my-4 border-gray-200" />
+      <div className="space-y-4">
+        {BREAKDOWN_FIELDS.map(({ key, label }) => (
+          <ResultRow
+            key={key}
+            label={label}
+            value={result[key].value}
+            basis={result[key].basis}
+            isEstimate={result[key].is_estimate}
+          />
+        ))}
+      </div>
+    </section>
   );
 }

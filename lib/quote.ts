@@ -22,9 +22,9 @@ export type QuoteInput = {
 };
 
 export const BREAKDOWN_FIELDS = [
-  { key: "guestroom_total", label: "Guestroom Total" },
-  { key: "meeting_room_total", label: "Meeting Room Total" },
-  { key: "fb_total", label: "F&B Total" },
+  { key: "guestroom_total", label: "Guestroom" },
+  { key: "meeting_room_total", label: "Meeting Room" },
+  { key: "fb_total", label: "Food and Beverage" },
 ] as const satisfies { key: keyof QuoteResult; label: string }[];
 
 export function formatCurrency(value: number): string {
@@ -33,11 +33,6 @@ export function formatCurrency(value: number): string {
     currency: "USD",
     maximumFractionDigits: 2,
   });
-}
-
-export function formatFieldAmount(field: Pick<QuoteField, "value" | "is_estimate">): string {
-  const amount = field.value == null ? "Not found" : formatCurrency(field.value);
-  return field.is_estimate ? `${amount} (estimate)` : amount;
 }
 
 function looksLikeHtml(text: string): boolean {
