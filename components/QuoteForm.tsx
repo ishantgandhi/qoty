@@ -36,7 +36,7 @@ export function QuoteForm({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between gap-3">
-        <label className="font-semibold" htmlFor="quote-text">
+        <label className="type-label" htmlFor="quote-text">
           Add Quote
         </label>
         <motion.button
@@ -97,7 +97,7 @@ export function QuoteForm({
       >
         <textarea
           id="quote-text"
-          className="h-48 w-full resize-none rounded-xl bg-transparent p-4 placeholder:text-gray-400 focus:outline-none"
+          className="type-body h-48 w-full resize-none rounded-xl bg-transparent p-4 placeholder:text-gray-400 focus:outline-none"
           placeholder="Enter text, upload files or do both :)"
           value={text}
           onChange={(e) => onTextChange(e.target.value)}
@@ -114,7 +114,7 @@ export function QuoteForm({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.85 }}
               transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-              className="inline-flex items-center gap-1.5 rounded-md bg-amber-100 px-2.5 py-1 text-sm"
+              className="type-meta inline-flex items-center gap-1.5 rounded-md bg-amber-100 px-2.5 py-1"
             >
               {file.name}
               <button
@@ -135,7 +135,7 @@ export function QuoteForm({
           type="button"
           onClick={onSubmit}
           disabled={loading}
-          className="flex-1 rounded-xl bg-amber-400 py-3 font-semibold text-black disabled:opacity-60"
+          className="type-button flex-1 rounded-xl bg-amber-400 py-3 text-black disabled:opacity-60"
           whileHover={loading ? undefined : { scale: 1.015, backgroundColor: '#f59e0b' }}
           whileTap={loading ? undefined : { scale: 0.985 }}
           animate={loading ? { opacity: [1, 0.7, 1] } : { opacity: 1 }}
@@ -147,7 +147,7 @@ export function QuoteForm({
           type="button"
           onClick={onClear}
           disabled={loading}
-          className="rounded-xl border border-gray-300 px-5 py-3 font-semibold text-gray-700 disabled:opacity-60"
+          className="type-button rounded-xl border border-gray-300 px-5 py-3 text-gray-700 disabled:opacity-60"
           whileHover={loading ? undefined : { scale: 1.02, backgroundColor: '#f9fafb' }}
           whileTap={loading ? undefined : { scale: 0.97 }}
         >

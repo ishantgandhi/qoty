@@ -62,7 +62,7 @@ export default function Home() {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 320, damping: 18, delay: 0.05 }}
         />
-        <h1 className="text-3xl font-medium">Qoty</h1>
+        <h1 className="type-brand">Qoty</h1>
       </motion.header>
 
       <motion.div
@@ -90,7 +90,7 @@ export default function Home() {
         {error && (
           <motion.p
             key="error"
-            className="mt-4 text-center text-red-600"
+            className="mt-4 text-center type-meta text-red-600"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}

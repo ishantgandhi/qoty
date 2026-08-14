@@ -42,7 +42,7 @@ function TotalQuoteCard({ result }: { result: QuoteResult }) {
         isEstimate={total_quote.is_estimate}
         emphasize
       />
-      <p className="text-xs text-gray-400">
+      <p className="type-fine text-gray-400">
         Two figures found, they differ. Review the component breakdown below.
       </p>
       <ResultRow
@@ -58,7 +58,7 @@ export function QuoteResults({ result }: { result: QuoteResult }) {
   return (
     <section className="mt-10">
       <motion.h2
-        className="mb-6 text-2xl font-bold"
+        className="type-section mb-6"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}

@@ -20,5 +20,37 @@ body {
   background: #ffffff;
   color: #171717;
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
   color-scheme: light only;
+}
+
+@layer components {
+  .type-brand {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+  .type-section {
+    @apply text-xl font-semibold tracking-tight;
+  }
+  .type-metric {
+    @apply text-3xl font-semibold tracking-tight;
+  }
+  .type-metric-sm {
+    @apply text-lg font-semibold tracking-tight;
+  }
+  .type-label {
+    @apply text-base font-medium;
+  }
+  .type-body {
+    @apply text-base font-normal;
+  }
+  .type-button {
+    @apply text-base font-semibold;
+  }
+  .type-meta {
+    @apply text-sm font-medium;
+  }
+  .type-fine {
+    @apply text-xs font-normal;
+  }
 }
