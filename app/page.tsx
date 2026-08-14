@@ -27,9 +27,54 @@ export default function Home() {
     });
   }
 
-    function looksLikeHtml(text: string): boolean {
-      return /<[a-z][\s\S]*>/i.test(text);
+  function looksLikeHtml(text: string): boolean {
+    return /<[a-z][\s\S]*>/i.test(text);
+  }
+
+  async function handleSubmit() {
+    setError(null);
+    setResult(null);
+  
+    const inputs: { type: string; content: string; label: string }[] = [];
+  
+    // handle the pasted text, if any
+    if (text.trim()) {
+      inputs.push({ type: looksLikeHtml(text) ? 'html' : 'text', content: text, label: 'Pasted text' });
     }
+  
+    // handle each uploaded file
+    for (const file of files) {
+      const isPdf = file.type.startsWith('application/pdf') || file.name.toLowerCase().endsWith('.pdf');
+      const content = isPdf ? await readFileAsBase64(file) : await readFileAsText(file);
+      inputs.push({ type: isPdf ? 'pdf' : 'html', content, label: file.name });
+    }
+  
+    if (inputs.length === 0) {
+      setError('No input provided');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await fetch('/api/extract', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({inputs}),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to parse quote');
+      }else{
+        setResult(data);
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'An unknown error occurred');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-16">
@@ -50,10 +95,10 @@ export default function Home() {
           accept=".html,.htm,.pdf,.txt"
           onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
         />
-        <button type="button">Parse quote</button>
+        <button type="button" onClick={handleSubmit}>Parse quote</button>
       </div>
 
       {/* results area goes here */}
     </main>
-  )
+  );
 }
