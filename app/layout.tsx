@@ -11,7 +11,10 @@ export const metadata: Metadata = {
   title: "Qoty",
   description: "Parse hotel quotes from text or files",
   icons: {
-    icon: "/qoty.png",
+    icon: [
+      { url: "/qoty.png", type: "image/png" },
+      { url: "/favicon.ico?v=2", type: "image/x-icon" },
+    ],
     apple: "/qoty.png",
   },
 };
