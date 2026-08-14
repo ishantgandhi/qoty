@@ -97,6 +97,41 @@ export default function Home() {
     );
   }
 
+  function TotalQuoteCard({ result }: { result: any }) {
+    const { total_quote, total_quote_check } = result;
+    const mismatch =
+      total_quote_check?.computed_value != null && !total_quote_check.matches_extraction;
+
+    if (!mismatch) {
+      return <FieldCard label="Total Quote" field={total_quote} />;
+    }
+
+    return (
+      <div className="border border-gray-200 rounded-md p-4">
+        <div className="text-sm text-gray-500 mb-3">
+          Total quote — two figures found, they differ
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-2">
+          <div>
+            <div className="text-xs text-gray-400 mb-1">Extracted</div>
+            <div className="text-lg font-medium">
+              {formatCurrency(total_quote.value)}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs text-gray-400 mb-1">Calculated</div>
+            <div className="text-lg font-medium">
+              {formatCurrency(total_quote_check.computed_value)}
+            </div>
+          </div>
+        </div>
+        <div className="text-sm text-gray-400">
+          Review the component breakdown below.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <main className="max-w-2xl mx-auto px-4 py-16">
       <h1 className="font-serif text-2xl text-center mb-10">
@@ -126,7 +161,7 @@ export default function Home() {
 
       {result && (
         <div className="space-y-3">
-          <FieldCard label="Total Quote" field={result.total_quote} />
+          <TotalQuoteCard result={result} />
           <FieldCard label="Guestroom Total" field={result.guestroom_total} />
           <FieldCard label="Meeting Room Total" field={result.meeting_room_total} />
           <FieldCard label="F&B Total" field={result.fb_total} />
