@@ -136,11 +136,19 @@ export async function POST(request) {
     guestroom_total: result.guestroom_total.value,
     meeting_room_total: result.meeting_room_total.value,
     fb_total: result.fb_total.value,
+    computed_total: computedTotal,
     field_basis: result,
   });
   
-  if (insertError) { // If the insert fails, log the error
+  if (insertError) {
     console.error("Supabase insert failed:", insertError);
+    return Response.json(
+      {
+        error: "Quote extracted but failed to save. Please try again.",
+        result,
+      },
+      { status: 500 }
+    );
   }
 
   return Response.json(result);

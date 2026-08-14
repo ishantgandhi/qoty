@@ -34,6 +34,11 @@ export default function Home() {
       });
       const data = await response.json();
       if (!response.ok) {
+        if (data.result) {
+          setResult(data.result);
+          setError(data.error || 'Quote extracted but failed to save.');
+          return;
+        }
         throw new Error(data.error || 'Failed to parse quote');
       }
       setResult(data);
@@ -92,7 +97,7 @@ export default function Home() {
             key="error"
             className="mt-4 text-center type-meta text-red-600"
             initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 1 }}
             exit={{ opacity: 0, y: -4 }}
           >
             {error}

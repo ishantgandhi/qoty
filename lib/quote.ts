@@ -48,7 +48,7 @@ function readFileAs(file: File, mode: "text" | "dataUrl"): Promise<string> {
     const reader = new FileReader();
     reader.onload = () => {
       const result = reader.result as string;
-      resolve(mode === "dataUrl" ? result.split(",")[1] : result);
+      resolve(mode === "dataUrl" ? result.split(",")[1] : result); // is of format "data:image/png;base64,..."
     };
     reader.onerror = () => reject(reader.error);
     if (mode === "dataUrl") reader.readAsDataURL(file);
@@ -61,7 +61,7 @@ export async function buildQuoteInputs(text: string, files: File[]): Promise<Quo
 
   if (text.trim()) {
     inputs.push({
-      type: looksLikeHtml(text) ? "html" : "text",
+      type: looksLikeHtml(text) ? "html" : "text", 
       content: text,
       label: "Pasted text",
     });
