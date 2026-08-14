@@ -34,21 +34,21 @@ export default function Home() {
   async function handleSubmit() {
     setError(null);
     setResult(null);
-  
+
     const inputs: { type: string; content: string; label: string }[] = [];
-  
+
     // handle the pasted text, if any
     if (text.trim()) {
       inputs.push({ type: looksLikeHtml(text) ? 'html' : 'text', content: text, label: 'Pasted text' });
     }
-  
+
     // handle each uploaded file
     for (const file of files) {
       const isPdf = file.type.startsWith('application/pdf') || file.name.toLowerCase().endsWith('.pdf');
       const content = isPdf ? await readFileAsBase64(file) : await readFileAsText(file);
       inputs.push({ type: isPdf ? 'pdf' : 'html', content, label: file.name });
     }
-  
+
     if (inputs.length === 0) {
       setError('No input provided');
       return;
@@ -61,12 +61,12 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({inputs}),
+        body: JSON.stringify({ inputs }),
       });
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.error || 'Failed to parse quote');
-      }else{
+      } else {
         setResult(data);
       }
     } catch (error) {
@@ -74,6 +74,27 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function formatCurrency(value: number): string {
+    return value.toLocaleString('en-US', { // inbuilt function to format currency
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 2,
+    });
+  }
+
+  function FieldCard({ label, field }: { label: string; field: { value: number | null; basis: string; is_estimate: boolean } }) {
+    return (
+      <div className="border border-gray-200 rounded-md p-4">
+        <div className="text-sm text-gray-500 mb-1">{label}</div>
+        <div className="text-xl font-medium mb-1">
+          {field.value == null ? 'Not found' : formatCurrency(field.value)}
+          {field.is_estimate && ' (estimate)'}
+        </div>
+        <div className="text-sm text-gray-400">{field.basis}</div>
+      </div>
+    );
   }
 
   return (
@@ -99,6 +120,18 @@ export default function Home() {
       </div>
 
       {/* results area goes here */}
+      {loading && <p className="text-center text-gray-500">Extracting...</p>}
+
+      {error && <p className="text-center text-red-600">{error}</p>}
+
+      {result && (
+        <div className="space-y-3">
+          <FieldCard label="Total Quote" field={result.total_quote} />
+          <FieldCard label="Guestroom Total" field={result.guestroom_total} />
+          <FieldCard label="Meeting Room Total" field={result.meeting_room_total} />
+          <FieldCard label="F&B Total" field={result.fb_total} />
+        </div>
+      )}
     </main>
   );
 }
