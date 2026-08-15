@@ -38,7 +38,11 @@ export default function History() {
       {!loading && quotes.length > 0 && (
         <ul className="space-y-4">
           {quotes.map((quote) => (
-            <SavedQuoteItem key={quote.id} quote={quote} />
+            <SavedQuoteItem
+              key={quote.id}
+              quote={quote}
+              onUnsave={(id) => setQuotes((current) => current.filter((item) => item.id !== id))}
+            />
           ))}
         </ul>
       )}

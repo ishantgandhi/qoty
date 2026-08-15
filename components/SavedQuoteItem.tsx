@@ -17,9 +17,37 @@ function formatSavedAt(iso: string): string {
   });
 }
 
-export function SavedQuoteItem({ quote }: { quote: SavedQuote }) {
+export function SavedQuoteItem({
+  quote,
+  onUnsave,
+}: {
+  quote: SavedQuote;
+  onUnsave: (id: string) => void;
+}) {
   const [open, setOpen] = useState(false);
+  const [unsaving, setUnsaving] = useState(false);
+  const [unsaveError, setUnsaveError] = useState<string | null>(null);
   const basis = quote.field_basis;
+
+  async function handleUnsave() {
+    setUnsaving(true);
+    setUnsaveError(null);
+    try {
+      const response = await fetch(`/api/unsave?id=${encodeURIComponent(quote.id)}`, {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setUnsaveError(data.error || 'Failed to unsave quote');
+        return;
+      }
+      onUnsave(quote.id);
+    } catch {
+      setUnsaveError('Failed to unsave quote');
+    } finally {
+      setUnsaving(false);
+    }
+  }
 
   return (
     <li className="rounded-xl border border-gray-200">
@@ -67,6 +95,7 @@ export function SavedQuoteItem({ quote }: { quote: SavedQuote }) {
                 label="Total"
                 value={quote.total_quote}
                 basis={basis?.total_quote.basis ?? 'Saved total'}
+                source = {basis?.total_quote.source ?? null}
                 isEstimate={basis?.total_quote.is_estimate ?? false}
                 emphasize
               />
@@ -77,9 +106,28 @@ export function SavedQuoteItem({ quote }: { quote: SavedQuote }) {
                   label={label}
                   value={quote[key]}
                   basis={basis?.[key].basis ?? 'Saved value'}
+                  source = {basis?.[key].source ?? null}
                   isEstimate={basis?.[key].is_estimate ?? false}
                 />
               ))}
+              <motion.button
+                type="button"
+                onClick={handleUnsave}
+                disabled={unsaving}
+                className="type-button mt-2 w-full rounded-xl border border-gray-300 py-3 text-gray-700 disabled:opacity-60"
+                whileHover={unsaving ? undefined : { scale: 1.015, borderColor: '#fbbf24' }}
+                whileTap={
+                  unsaving
+                    ? undefined
+                    : { scale: 0.985, backgroundColor: '#fbbf24', borderColor: '#fbbf24', color: '#000000' }
+                }
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              >
+                {unsaving ? 'Unsaving…' : 'Unsave'}
+              </motion.button>
+              {unsaveError && (
+                <p className="type-fine text-center text-red-600">{unsaveError}</p>
+              )}
             </div>
           </motion.div>
         )}

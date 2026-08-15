@@ -37,11 +37,6 @@ export default function Home() {
       });
       const data = await response.json();
       if (!response.ok) {
-        if (data.result) {
-          setResult(data.result);
-          setError(data.error || 'Quote extracted but failed to save.');
-          return;
-        }
         throw new Error(data.error || 'Failed to parse quote');
       }
       setResult(data);

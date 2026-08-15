@@ -30,12 +30,14 @@ export function ResultRow({
   basis,
   emphasize = false,
   isEstimate = false,
+  source = null,
 }: {
   label: string;
   value: number | null;
   basis: string;
   emphasize?: boolean;
   isEstimate?: boolean;
+  source?: string | null;
 }) {
   const [open, setOpen] = useState(false);
   const amountClass = emphasize ? 'type-metric' : 'type-metric-sm';
@@ -62,7 +64,7 @@ export function ResultRow({
       </button>
       <AnimatePresence initial={false}>
         {open && (
-          <motion.p
+          <motion.div
             key="basis"
             className="type-fine overflow-hidden pt-2 text-gray-500"
             initial={{ height: 0, opacity: 0 }}
@@ -70,8 +72,11 @@ export function ResultRow({
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
-            {basis}
-          </motion.p>
+            <p>{basis}</p>
+            {source && (
+              <p className="type-fine text-gray-400 mt-1">from {source}</p>
+            )}
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

@@ -77,6 +77,7 @@ export function QuoteResults({ result }: { result: QuoteResult }) {
               value={result[key].value}
               basis={result[key].basis}
               isEstimate={result[key].is_estimate}
+              source ={result[key].source}
             />
           </motion.div>
         ))}

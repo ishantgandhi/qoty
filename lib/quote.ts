@@ -2,6 +2,7 @@ export type QuoteField = {
   value: number | null;
   basis: string;
   is_estimate: boolean;
+  source: string | null;
 };
 
 export type QuoteResult = {
