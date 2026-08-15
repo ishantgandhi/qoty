@@ -103,7 +103,7 @@ export async function POST(request) {
   try {
     const { output } = await generateText({
       model: model,
-      system: quoteExtractionInstructions, // your long description text — see below
+      system: quoteExtractionInstructions, 
       output: Output.object({ schema: quoteSchema }),
       prompt: text,
     });

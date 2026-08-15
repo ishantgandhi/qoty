@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 
 const TABS = [
   { href: '/', label: 'Parser' },
-  { href: '/history', label: 'Saved' },
+  { href: '/saved', label: 'Saved' },
 ] as const;
 
 export function SiteHeader() {

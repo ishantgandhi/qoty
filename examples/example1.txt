@@ -1,0 +1,13 @@
+<html>
+<body>
+<table>
+<tr><td>First option hold available for dates requested?</td><td>Yes</td></tr>
+<tr><td>Dates Available</td><td>6/2/2026 - 6/5/2026</td></tr>
+<tr><td>Lowest ROH commissionable group rate</td><td>$245.00</td></tr>
+<tr><td>Total Number of Guestrooms</td><td>110 per night = 330</td></tr>
+<tr><td>Meeting room rental</td><td>Waived with food and beverage minimum of $28,000/ $5,200++ without food and beverage minimum</td></tr>
+<tr><td>Meeting room taxes/fees</td><td>10.1% Tax and 23% Service Charge</td></tr>
+<tr><td>F&B minimum, if required</td><td>$28,000</td></tr>
+</table>
+</body>
+</html>
