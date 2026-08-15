@@ -138,12 +138,12 @@ export function QuoteForm({
         </AnimatePresence>
       </motion.div>
 
-      <div className="mt-6 flex gap-3">
+      <div className="mt-6 flex items-stretch gap-3">
         <motion.button
           type="button"
           onClick={onSubmit}
           disabled={loading}
-          className="type-button flex-1 rounded-xl bg-amber-400 py-3 text-black disabled:opacity-60"
+          className="type-button h-12 min-w-0 flex-1 whitespace-nowrap rounded-xl bg-amber-400 px-4 text-black disabled:opacity-60"
           whileHover={loading ? undefined : { scale: 1.015, backgroundColor: '#f59e0b' }}
           whileTap={loading ? undefined : { scale: 0.985 }}
           animate={loading ? { opacity: [1, 0.7, 1] } : { opacity: 1 }}
@@ -152,11 +152,11 @@ export function QuoteForm({
           {loading ? 'Running Qoty…' : 'Run Qoty'}
         </motion.button>
 
-        <div className="relative">
+        <div className="relative h-12 w-[15.5rem] shrink-0">
           <motion.select
             value={selectedModel}
             onChange={(e) => onModelChange(e.target.value)}
-            className="type-button appearance-none rounded-xl border border-gray-300 py-3 pl-5 pr-10 text-gray-700 disabled:opacity-60"
+            className="type-button h-full w-full appearance-none rounded-xl border border-gray-300 pl-3 pr-9 text-gray-700 disabled:opacity-60"
           >
             {MODEL_OPTIONS.map((model) => (
               <option key={model.key} value={model.key}>
@@ -188,7 +188,7 @@ export function QuoteForm({
           type="button"
           onClick={onClear}
           disabled={loading}
-          className="type-button rounded-xl border border-gray-300 px-5 py-3 text-gray-700 disabled:opacity-60"
+          className="type-button h-12 shrink-0 whitespace-nowrap rounded-xl border border-gray-300 px-5 text-gray-700 disabled:opacity-60"
           whileHover={loading ? undefined : { scale: 1.02, backgroundColor: '#f9fafb' }}
           whileTap={loading ? undefined : { scale: 0.97 }}
         >
