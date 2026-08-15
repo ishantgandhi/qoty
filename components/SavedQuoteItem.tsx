@@ -1,4 +1,5 @@
 'use client';
+import { MODEL_OPTIONS } from '@/lib/models';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
@@ -15,6 +16,11 @@ function formatSavedAt(iso: string): string {
     dateStyle: 'medium',
     timeStyle: 'short',
   });
+}
+
+function formatModelName(key: string | null): string {
+  if (!key) return 'Unknown model';
+  return MODEL_OPTIONS.find((m) => m.key === key)?.label ?? key;
 }
 
 export function SavedQuoteItem({
@@ -63,6 +69,7 @@ export function SavedQuoteItem({
         <span className="flex min-w-0 items-center gap-3">
           <span className="type-meta text-gray-500">{formatSourceType(quote.source_type)}</span>
           <span className="type-fine truncate text-gray-400">{formatSavedAt(quote.created_at)}</span>
+          <span className="type-fine text-gray-400">{formatModelName(quote.model_used)}</span>
           <motion.span
             className="inline-flex shrink-0 text-gray-400"
             animate={{ rotate: open ? 180 : 0 }}
@@ -95,7 +102,7 @@ export function SavedQuoteItem({
                 label="Total"
                 value={quote.total_quote}
                 basis={basis?.total_quote.basis ?? 'Saved total'}
-                source = {basis?.total_quote.source ?? null}
+                source={basis?.total_quote.source ?? null}
                 isEstimate={basis?.total_quote.is_estimate ?? false}
                 emphasize
               />
@@ -106,7 +113,7 @@ export function SavedQuoteItem({
                   label={label}
                   value={quote[key]}
                   basis={basis?.[key].basis ?? 'Saved value'}
-                  source = {basis?.[key].source ?? null}
+                  source={basis?.[key].source ?? null}
                   isEstimate={basis?.[key].is_estimate ?? false}
                 />
               ))}

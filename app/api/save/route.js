@@ -16,7 +16,7 @@ export async function POST(request) {
     total_quote_check,
     _metadata = {},
   } = body;
-  const { sourceType, rawText } = _metadata;
+  const { sourceType, rawText, model } = _metadata;
 
   if (
     !total_quote ||
@@ -38,6 +38,7 @@ export async function POST(request) {
     meeting_room_total: meeting_room_total.value,
     fb_total: fb_total.value,
     computed_total: total_quote_check.computed_value,
+    model_used: model,
     field_basis: {
       total_quote,
       guestroom_total,
@@ -57,6 +58,7 @@ export async function POST(request) {
         meeting_room_total,
         fb_total,
         total_quote_check,
+        model,
       },
       { status: 500 },
     );

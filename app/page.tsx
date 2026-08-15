@@ -14,6 +14,7 @@ export default function Home() {
   const [result, setResult] = useState<QuoteResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [selectedModel, setSelectedModel] = useState('claude-sonnet');
 
   async function handleSubmit() {
     setError(null);
@@ -33,7 +34,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ inputs }),
+        body: JSON.stringify({ inputs, model: selectedModel }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -80,12 +81,14 @@ export default function Home() {
         transition={{ duration: 0.4, ease: 'easeOut', delay: 0.12 }}
       >
         <QuoteForm
+          selectedModel={selectedModel}
           text={text}
           files={files}
           loading={loading}
           onTextChange={setText}
           onFilesChange={setFiles}
           onSubmit={handleSubmit}
+          onModelChange={setSelectedModel}
           onClear={() => {
             setText('');
             setFiles([]);

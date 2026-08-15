@@ -2,23 +2,28 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRef, useState } from 'react';
+import { MODEL_OPTIONS } from '@/lib/models';
 
 type QuoteFormProps = {
   text: string;
   files: File[];
   loading: boolean;
+  selectedModel: string;
   onTextChange: (text: string) => void;
   onFilesChange: (files: File[]) => void;
   onSubmit: () => void;
-  onClear: () => void;
+  onClear: () => void;  
+  onModelChange: (model: string) => void;
 };
 
 export function QuoteForm({
   text,
   files,
   loading,
+  selectedModel,
   onTextChange,
   onFilesChange,
+  onModelChange,
   onSubmit,
   onClear,
 }: QuoteFormProps) {
@@ -143,6 +148,15 @@ export function QuoteForm({
         >
           {loading ? 'Running Qoty…' : 'Run Qoty'}
         </motion.button>
+        <motion.select
+          value={selectedModel}
+          onChange={(e) => onModelChange(e.target.value)}
+          className="type-button rounded-xl border border-gray-300 px-2 py-3 text-gray-700 disabled:opacity-60 appearance-none"
+        >
+          {MODEL_OPTIONS.map((model) => (
+            <option key={model.key} value={model.key}>{model.label}</option>
+          ))}
+        </motion.select>
         <motion.button
           type="button"
           onClick={onClear}

@@ -1,12 +1,17 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { normalizeMultipleInputs } from "@/lib/normalize";
-import { tools } from "@/lib/extract-tools";
+import { generateText, Output } from "ai";
+import { anthropic } from "@ai-sdk/anthropic";
+import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
+import { quoteExtractionInstructions, quoteSchema } from "@/lib/quote-schema";
 
 export const maxDuration = 60;
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const MODEL_MAP = {
+  "gpt-5.4-mini": openai("gpt-5.4-mini"),
+  "gemini-3.7-flash": google("gemini-3.7-flash"),
+  "claude-sonnet": anthropic("claude-sonnet-5"),
+};
 
 function emptyResult(reason) {
   const basis = reason;
@@ -29,15 +34,24 @@ export async function POST(request) {
 
   const { inputs } = body;
 
-  if (!Array.isArray(inputs) || inputs.length === 0) { // No inputs provided to extract from
+  if (!Array.isArray(inputs) || inputs.length === 0) {
+    // No inputs provided to extract from
     return Response.json(
       { error: "No inputs provided to extract from" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
-  const normalizeInputs = inputs.map((input, i) => { // Normalize inputs to be used in the Claude call
-    if (input.type === "pdf") { // PDF input convert to base64 so it is actual text
+  const modelKey = MODEL_MAP[body.model] ? body.model : "claude-sonnet";
+  const model = MODEL_MAP[modelKey];
+  if (!model) {
+    return Response.json({ error: "Invalid model" }, { status: 400 });
+  }
+
+  const normalizeInputs = inputs.map((input, i) => {
+    // Normalize inputs to be used in the Claude call
+    if (input.type === "pdf") {
+      // PDF input convert to base64 so it is actual text
       return {
         input: Buffer.from(input.content, "base64"),
         type: "pdf",
@@ -47,7 +61,8 @@ export async function POST(request) {
     return {
       input: input.content,
       type: input.type,
-      label: input.label || (input.type === "html" ? "Pasted email" : "Pasted text"),
+      label:
+        input.label || (input.type === "html" ? "Pasted email" : "Pasted text"),
     };
   });
   let text;
@@ -56,62 +71,50 @@ export async function POST(request) {
   } catch (err) {
     console.error("Failed to normalize inputs:", err);
     return Response.json(
-      { error: "Failed to read one or more inputs. Check that PDFs and HTML extracted correctly." },
-      { status: 500 }
+      {
+        error:
+          "Failed to read one or more inputs. Check that PDFs and HTML extracted correctly.",
+      },
+      { status: 500 },
     );
   }
 
-  const distinctTypes = [...new Set(inputs.map((i) => i.type))]; 
+  const distinctTypes = [...new Set(inputs.map((i) => i.type))];
   const sourceType = distinctTypes.length > 1 ? "combined" : distinctTypes[0];
 
-  if (typeof text !== "string" || text.trim().length === 0) { // No text provided to extract from
+  if (typeof text !== "string" || text.trim().length === 0) {
+    // No text provided to extract from
     return Response.json(
       { error: "No text provided to extract from" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
-  if (text.trim().length < 20) { // Too short to scan for pricing information
+  if (text.trim().length < 20) {
+    // Too short to scan for pricing information
     return Response.json(
       emptyResult(
-        "The provided text was too short to scan for pricing information — check that the source file extracted correctly."
-      )
+        "The provided text was too short to scan for pricing information — check that the source file extracted correctly.",
+      ),
     );
   }
 
-  let response;
+  let result;
   try {
-    response = await anthropic.messages.create({
-      model: "claude-sonnet-5",
-      messages: [{ role: "user", content: text }],
-      max_tokens: 1024,
-      tools,
-      tool_choice: { type: "tool", name: "extract_quote_fields" },
+    const { output } = await generateText({
+      model: model,
+      system: quoteExtractionInstructions, // your long description text — see below
+      output: Output.object({ schema: quoteSchema }),
+      prompt: text,
     });
+    result = output;
   } catch (err) {
-    console.error("Anthropic API call failed:", err);
+    console.error("Extraction call failed:", err);
     return Response.json(
-      { error: "Extraction service is currently unavailable. Please try again." },
-      { status: 502 }
-    );
-  }
-
-  const toolUse = response.content.find((block) => block.type === "tool_use");
-  if (!toolUse) {
-    return Response.json({ error: "No tool use found" }, { status: 500 });
-  }
-
-  const result = toolUse.input;
-
-  const requiredFields = ["total_quote", "guestroom_total", "meeting_room_total", "fb_total"];
-  const hasAllFields = requiredFields.every(
-    (key) => result?.[key] && typeof result[key] === "object" && "value" in result[key]
-  );
-  if (!hasAllFields) {
-    console.error("Malformed extraction result:", result);
-    return Response.json(
-      { error: "Extraction returned an unexpected shape. Please try again." },
-      { status: 500 }
+      {
+        error: "Extraction service is currently unavailable. Please try again.",
+      },
+      { status: 502 },
     );
   }
 
@@ -123,16 +126,18 @@ export async function POST(request) {
     meeting_room_total.value != null &&
     fb_total.value != null
   ) {
-    computedTotal = guestroom_total.value + meeting_room_total.value + fb_total.value;
+    computedTotal =
+      guestroom_total.value + meeting_room_total.value + fb_total.value;
   }
 
   result.total_quote_check = {
     computed_value: computedTotal,
-    matches_extraction: computedTotal !== null && total_quote.value === computedTotal,
+    matches_extraction:
+      computedTotal !== null && total_quote.value === computedTotal,
   };
 
   return Response.json({
     ...result,
-    _metadata: { sourceType, rawText: text },
+    _metadata: { sourceType, rawText: text, model: modelKey },
   });
 }
