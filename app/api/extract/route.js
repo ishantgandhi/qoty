@@ -131,7 +131,8 @@ export async function POST(request) {
     matches_extraction: computedTotal !== null && total_quote.value === computedTotal,
   };
 
-  return Response.json(result,
-    { _metadata: { source_type: sourceType, raw_text: text } }
-  );
+  return Response.json({
+    ...result,
+    _metadata: { sourceType, rawText: text },
+  });
 }

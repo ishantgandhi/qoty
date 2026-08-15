@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { QuoteForm } from '@/components/QuoteForm';
 import { QuoteResults } from '@/components/QuoteResults';
+import { SaveButton } from '@/components/SaveButton';
 import { buildQuoteInputs, type QuoteResult } from '@/lib/quote';
 
 export default function Home() {
@@ -12,10 +13,12 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<QuoteResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   async function handleSubmit() {
     setError(null);
     setResult(null);
+    setSaveStatus('idle');
 
     const inputs = await buildQuoteInputs(text, files);
     if (inputs.length === 0) {
@@ -46,6 +49,31 @@ export default function Home() {
       setError(error instanceof Error ? error.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleSave() {
+    if (!result) return;
+    setError(null);
+    setSaveStatus('saving');
+    try {
+      const response = await fetch('/api/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(result),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setSaveStatus('error');
+        setError(data.error || 'Failed to save quote');
+        return;
+      }
+      setSaveStatus('saved');
+    } catch {
+      setSaveStatus('error');
+      setError('Failed to save quote');
     }
   }
 
@@ -87,6 +115,7 @@ export default function Home() {
             setFiles([]);
             setResult(null);
             setError(null);
+            setSaveStatus('idle');
           }}
         />
       </motion.div>
@@ -115,6 +144,7 @@ export default function Home() {
             transition={{ duration: 0.4, ease: 'easeOut' }}
           >
             <QuoteResults result={result} />
+            <SaveButton saveStatus={saveStatus} onSave={handleSave} />
           </motion.div>
         )}
       </AnimatePresence>

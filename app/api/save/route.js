@@ -33,12 +33,18 @@ export async function POST(request) {
   const { error: insertError } = await supabase.from("quotes").insert({
     source_type: sourceType,
     raw_text: rawText,
-    total_quote: total_quote,
-    guestroom_total: guestroom_total,
-    meeting_room_total: meeting_room_total,
-    fb_total: fb_total,
+    total_quote: total_quote.value,
+    guestroom_total: guestroom_total.value,
+    meeting_room_total: meeting_room_total.value,
+    fb_total: fb_total.value,
     computed_total: total_quote_check.computed_value,
-    field_basis: body,
+    field_basis: {
+      total_quote,
+      guestroom_total,
+      meeting_room_total,
+      fb_total,
+      total_quote_check,
+    },
   });
 
   if (insertError) {

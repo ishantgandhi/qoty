@@ -13,6 +13,10 @@ export type QuoteResult = {
     computed_value: number | null;
     matches_extraction: boolean;
   };
+  _metadata?: {
+    sourceType: string;
+    rawText: string;
+  };
 };
 
 export type QuoteInput = {
