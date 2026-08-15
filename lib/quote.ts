@@ -10,6 +10,7 @@ export type QuoteResult = {
   guestroom_total: QuoteField;
   meeting_room_total: QuoteField;
   fb_total: QuoteField;
+  model: string;
   total_quote_check?: {
     computed_value: number | null;
     matches_extraction: boolean;
@@ -30,6 +31,7 @@ export type SavedQuote = {
   fb_total: number | null;
   computed_total: number | null;
   field_basis: QuoteResult | null;
+  model_used: string;
 };
 
 const SOURCE_LABELS: Record<string, string> = {
