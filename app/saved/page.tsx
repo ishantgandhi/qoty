@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { SavedQuoteItem } from '@/components/SavedQuoteItem';
 import type { SavedQuote } from '@/lib/quote';
 
-export default function History() {
+export default function Saved() {
   const [quotes, setQuotes] = useState<SavedQuote[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
