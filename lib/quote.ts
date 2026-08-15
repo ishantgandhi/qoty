@@ -19,6 +19,29 @@ export type QuoteResult = {
   };
 };
 
+export type SavedQuote = {
+  id: string;
+  created_at: string;
+  source_type: string;
+  total_quote: number | null;
+  guestroom_total: number | null;
+  meeting_room_total: number | null;
+  fb_total: number | null;
+  computed_total: number | null;
+  field_basis: QuoteResult | null;
+};
+
+const SOURCE_LABELS: Record<string, string> = {
+  html: "HTML",
+  pdf: "PDF",
+  text: "Text",
+  combined: "Combined",
+};
+
+export function formatSourceType(sourceType: string): string {
+  return SOURCE_LABELS[sourceType] ?? sourceType;
+}
+
 export type QuoteInput = {
   type: string;
   content: string;

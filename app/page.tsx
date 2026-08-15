@@ -78,26 +78,7 @@ export default function Home() {
   }
 
   return (
-    <main className="max-w-2xl mx-auto w-full px-4 py-16 font-sans">
-      <motion.header
-        className="mb-10 flex items-center justify-center gap-3"
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
-      >
-        <motion.img
-          src="/qoty.png"
-          alt=""
-          width={64}
-          height={64}
-          className="h-16 w-16 rounded-full"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 320, damping: 18, delay: 0.05 }}
-        />
-        <h1 className="type-brand">Qoty</h1>
-      </motion.header>
-
+    <main>
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
