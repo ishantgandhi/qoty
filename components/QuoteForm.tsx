@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { MODEL_OPTIONS } from '@/lib/models';
+import { MODEL_OPTIONS, getCheapestModel, getMostExpensiveModel } from '@/lib/models';
 
 type QuoteFormProps = {
   text: string;
@@ -12,9 +12,12 @@ type QuoteFormProps = {
   onTextChange: (text: string) => void;
   onFilesChange: (files: File[]) => void;
   onSubmit: () => void;
-  onClear: () => void;  
+  onClear: () => void;
   onModelChange: (model: string) => void;
 };
+
+const cheapest = getCheapestModel();
+const priciest = getMostExpensiveModel();
 
 export function QuoteForm({
   text,
@@ -148,15 +151,39 @@ export function QuoteForm({
         >
           {loading ? 'Running Qoty…' : 'Run Qoty'}
         </motion.button>
-        <motion.select
-          value={selectedModel}
-          onChange={(e) => onModelChange(e.target.value)}
-          className="type-button rounded-xl border border-gray-300 px-2 py-3 text-gray-700 disabled:opacity-60 appearance-none"
-        >
-          {MODEL_OPTIONS.map((model) => (
-            <option key={model.key} value={model.key}>{model.label}</option>
-          ))}
-        </motion.select>
+
+        <div className="relative">
+          <motion.select
+            value={selectedModel}
+            onChange={(e) => onModelChange(e.target.value)}
+            className="type-button appearance-none rounded-xl border border-gray-300 py-3 pl-5 pr-10 text-gray-700 disabled:opacity-60"
+          >
+            {MODEL_OPTIONS.map((model) => (
+              <option key={model.key} value={model.key}>
+                {model.label}
+                {model.key === cheapest.key ? ' (Cheapest)' : ''}
+                {model.key === priciest.key ? ' (Most expensive)' : ''}
+              </option>
+            ))}
+          </motion.select>
+          <svg
+            className="pointer-events-none absolute right-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400"
+            width="14"
+            height="14"
+            viewBox="0 0 12 12"
+            fill="none"
+            aria-hidden
+          >
+            <path
+              d="M2.5 4.5L6 8L9.5 4.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+
         <motion.button
           type="button"
           onClick={onClear}

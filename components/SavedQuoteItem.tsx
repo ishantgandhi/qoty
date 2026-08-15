@@ -55,6 +55,9 @@ export function SavedQuoteItem({
     }
   }
 
+  const totalCheck = basis?.total_quote_check;
+  const mismatch = totalCheck?.computed_value != null && !totalCheck.matches_extraction;
+
   return (
     <li className="rounded-xl border border-gray-200">
       <button
@@ -64,7 +67,7 @@ export function SavedQuoteItem({
         className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left"
       >
         <span className={`type-metric-sm ${quote.total_quote == null ? 'text-gray-400' : 'text-amber-400'}`}>
-          {quote.total_quote == null ? 'Not found' : formatCurrency(quote.total_quote)}
+          {mismatch ? 'Mismatch' : formatCurrency(quote.total_quote ?? 0)}
         </span>
         <span className="flex min-w-0 items-center gap-3">
           <span className="type-meta text-gray-500">{formatSourceType(quote.source_type)}</span>
@@ -98,14 +101,30 @@ export function SavedQuoteItem({
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
             <div className="space-y-4 pt-4">
-              <ResultRow
-                label="Total"
-                value={quote.total_quote}
-                basis={basis?.total_quote.basis ?? 'Saved total'}
-                source={basis?.total_quote.source ?? null}
-                isEstimate={basis?.total_quote.is_estimate ?? false}
-                emphasize
-              />
+              {mismatch ? (
+                <div className="space-y-1">
+                  <div className="type-meta text-gray-500">Total quote — two figures found, they differ</div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <div className="type-fine text-gray-400">Extracted</div>
+                      <div className="type-metric-sm text-amber-400">{formatCurrency(quote.total_quote ?? 0)}</div>
+                    </div>
+                    <div>
+                      <div className="type-fine text-gray-400">Calculated</div>
+                      <div className="type-metric-sm text-amber-400">{formatCurrency(totalCheck.computed_value ?? 0)}</div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <ResultRow
+                  label="Total"
+                  value={quote.total_quote}
+                  basis={basis?.total_quote.basis ?? 'Saved total'}
+                  source={basis?.total_quote.source ?? null}
+                  isEstimate={basis?.total_quote.is_estimate ?? false}
+                  emphasize
+                />
+              )}
               <hr className="border-gray-200" />
               {BREAKDOWN_FIELDS.map(({ key, label }) => (
                 <ResultRow
