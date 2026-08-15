@@ -42,7 +42,7 @@ export async function POST(request) {
     );
   }
 
-  const modelKey = MODEL_MAP[body.model] ? body.model : "claude-sonnet";
+  const modelKey = MODEL_MAP[body.model] ? body.model : "gpt-5.4-mini";
   const model = MODEL_MAP[modelKey];
   if (!model) {
     return Response.json({ error: "Invalid model" }, { status: 400 });
