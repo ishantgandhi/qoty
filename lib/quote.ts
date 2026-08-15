@@ -2,6 +2,7 @@ export type QuoteField = {
   value: number | null;
   basis: string;
   is_estimate: boolean;
+  source: string | null;
 };
 
 export type QuoteResult = {
@@ -13,7 +14,34 @@ export type QuoteResult = {
     computed_value: number | null;
     matches_extraction: boolean;
   };
+  _metadata?: {
+    sourceType: string;
+    rawText: string;
+  };
 };
+
+export type SavedQuote = {
+  id: string;
+  created_at: string;
+  source_type: string;
+  total_quote: number | null;
+  guestroom_total: number | null;
+  meeting_room_total: number | null;
+  fb_total: number | null;
+  computed_total: number | null;
+  field_basis: QuoteResult | null;
+};
+
+const SOURCE_LABELS: Record<string, string> = {
+  html: "HTML",
+  pdf: "PDF",
+  text: "Text",
+  combined: "Combined",
+};
+
+export function formatSourceType(sourceType: string): string {
+  return SOURCE_LABELS[sourceType] ?? sourceType;
+}
 
 export type QuoteInput = {
   type: string;

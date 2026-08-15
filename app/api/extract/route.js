@@ -1,5 +1,4 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { supabase } from "@/lib/supabase";
 import { normalizeMultipleInputs } from "@/lib/normalize";
 import { tools } from "@/lib/extract-tools";
 
@@ -131,27 +130,9 @@ export async function POST(request) {
     computed_value: computedTotal,
     matches_extraction: computedTotal !== null && total_quote.value === computedTotal,
   };
-  const { error: insertError } = await supabase.from("quotes").insert({ // Save the extraction result to the database
-    source_type: sourceType,
-    raw_text: text,
-    total_quote: result.total_quote.value,
-    guestroom_total: result.guestroom_total.value,
-    meeting_room_total: result.meeting_room_total.value,
-    fb_total: result.fb_total.value,
-    computed_total: computedTotal,
-    field_basis: result,
-  });
-  
-  if (insertError) {
-    console.error("Supabase insert failed:", insertError);
-    return Response.json(
-      {
-        error: "Quote extracted but failed to save. Please try again.",
-        result,
-      },
-      { status: 500 }
-    );
-  }
 
-  return Response.json(result);
+  return Response.json({
+    ...result,
+    _metadata: { sourceType, rawText: text },
+  });
 }

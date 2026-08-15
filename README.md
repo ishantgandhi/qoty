@@ -52,10 +52,16 @@ on quotes
 for insert
 to anon
 with check (true);
+
+create policy "Allow deletes from app"
+on quotes
+for delete
+to anon
+using (true);
 ```
 
 
-The app uses the **anon** key from the server, so the insert policy above is required or saves will fail.
+The app uses the **anon** key from the server, so the insert and delete policies above are required or save/unsave will fail.
 
 ## Run locally
 

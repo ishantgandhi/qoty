@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
+import { SiteHeader } from "@/components/SiteHeader";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -31,7 +32,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       style={{ colorScheme: "light" }}
     >
       <body className="min-h-full flex flex-col bg-white text-neutral-900 font-sans">
-        {children}
+        <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-16">
+          <SiteHeader />
+          {children}
+        </div>
       </body>
     </html>
   );
