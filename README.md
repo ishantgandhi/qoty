@@ -94,7 +94,7 @@ Example files are in `examples/`.
 
 ## Deployed (Vercel)
 
-The live app is at [https://hotel-quote-parser.vercel.app/](https://hotel-quote-parser.vercel.app/).
+The live app is at [https://qotyapp.vercel.app/](https://qotyapp.vercel.app/).
 
 Vercel Hobby has a ~4.5MB request-body limit (413 if exceeded) and a function timeout. Extract sets `maxDuration = 60`. Large HTML emails with embedded images or huge PDFs should be pasted as text or trimmed. Add the same env vars in the Vercel project settings.
 
