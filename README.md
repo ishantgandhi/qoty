@@ -90,7 +90,7 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000).
 
 1. Paste a quote, upload `.html` / `.pdf` / `.txt`, or both.
-2. Pick a model (cheapest and Pricey are labeled).
+2. Pick a model (cheapest and pricey are labeled).
 3. Click **Run Qoty**.
 4. Optionally click **Save quote**.
 5. Open the **Saved** tab to expand a quote or **Unsave** it.
