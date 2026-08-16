@@ -162,7 +162,7 @@ export function QuoteForm({
               <option key={model.key} value={model.key}>
                 {model.label}
                 {model.key === cheapest.key ? ' (Cheapest)' : ''}
-                {model.key === priciest.key ? ' (Most expensive)' : ''}
+                {model.key === priciest.key ? ' (Pricey)' : ''}
               </option>
             ))}
           </motion.select>
