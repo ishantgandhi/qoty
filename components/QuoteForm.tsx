@@ -138,12 +138,12 @@ export function QuoteForm({
         </AnimatePresence>
       </motion.div>
 
-      <div className="mt-6 flex items-stretch gap-3">
+      <div className="mt-6 flex flex-wrap items-stretch gap-3 sm:flex-nowrap">
         <motion.button
           type="button"
           onClick={onSubmit}
           disabled={loading}
-          className="type-button h-12 min-w-0 flex-1 whitespace-nowrap rounded-xl bg-amber-400 px-4 text-black disabled:opacity-60"
+          className="type-button order-2 h-12 w-full whitespace-nowrap rounded-xl bg-amber-400 px-4 text-black disabled:opacity-60 sm:order-1 sm:w-auto sm:min-w-0 sm:flex-1"
           whileHover={loading ? undefined : { scale: 1.015, backgroundColor: '#f59e0b' }}
           whileTap={loading ? undefined : { scale: 0.985 }}
           animate={loading ? { opacity: [1, 0.7, 1] } : { opacity: 1 }}
@@ -152,7 +152,7 @@ export function QuoteForm({
           {loading ? 'Running Qoty…' : 'Run Qoty'}
         </motion.button>
 
-        <div className="relative h-12 w-[15.5rem] shrink-0">
+        <div className="relative order-1 h-12 min-w-0 flex-1 sm:order-2 sm:w-[15.5rem] sm:flex-none">
           <motion.select
             value={selectedModel}
             onChange={(e) => onModelChange(e.target.value)}
@@ -188,7 +188,7 @@ export function QuoteForm({
           type="button"
           onClick={onClear}
           disabled={loading}
-          className="type-button h-12 shrink-0 whitespace-nowrap rounded-xl border border-gray-300 px-5 text-gray-700 disabled:opacity-60"
+          className="type-button order-1 h-12 shrink-0 whitespace-nowrap rounded-xl border border-gray-300 px-5 text-gray-700 disabled:opacity-60 sm:order-3"
           whileHover={loading ? undefined : { scale: 1.02, backgroundColor: '#f9fafb' }}
           whileTap={loading ? undefined : { scale: 0.97 }}
         >
