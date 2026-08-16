@@ -4,6 +4,11 @@ Qoty extracts hotel quote pricing from pasted text, HTML emails, or PDF/HTML/TXT
 
 Parser and Saved are separate tabs. Extraction does not write to the database until you click **Save quote**.
 
+## Video submission
+
+- [Loom](https://www.loom.com/share/4cf344d8888f44e7a8276b107ea77a24)
+- [Google Drive](https://drive.google.com/file/d/11cMVxteCx3ruXOcBAZlZXLQDLvXOqpde/view?usp=sharing)
+
 ## Prerequisites
 
 - Node.js 20+
